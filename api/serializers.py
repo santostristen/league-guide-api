@@ -1,14 +1,13 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models.mango import Mango
 from .models.user import User
 from .models.guide import Guide
 
-class MangoSerializer(serializers.ModelSerializer):
+class GuideSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Mango
-        fields = ('id', 'name', 'color', 'ripe', 'owner')
+        model = Guide
+        fields = ('id', 'title', 'text', 'owner')
 
 class UserSerializer(serializers.ModelSerializer):
     # This model serializer will be used for User creation
@@ -46,8 +45,3 @@ class ChangePasswordSerializer(serializers.Serializer):
     model = get_user_model()
     old = serializers.CharField(required=True)
     new = serializers.CharField(required=True)
-
-class GuideSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Guide
-        fields = ('id', 'title', 'text', 'owner')
