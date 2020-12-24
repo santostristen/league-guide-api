@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from rest_framework import generics, status
 from django.shortcuts import get_object_or_404
@@ -12,10 +12,7 @@ from ..serializers import GuideSerializer, UserSerializer
 
 
 class Guides(generics.ListCreateAPIView):
-    permission_classes_by_method = {
-        'GET': (),
-        'POST': (IsAuthenticated,),
-    }
+    permission_classes=(IsAuthenticated,)
     serializer_class = GuideSerializer
     def get(self, request):
         """Index request"""
@@ -26,20 +23,12 @@ class Guides(generics.ListCreateAPIView):
 
     def post(self, request):
         """Create request"""
-        request.data['guide']['owner'] = request.user.id
 
         guide = GuideSerializer(data=request.data)
         if guide.is_valid():
             guide.save()
             return Response({ 'guide': guide.data }, status=status.HTTP_201_CREATED)
         return Response(guide.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def get_permissions(self):
-        print(self.request.method)
-        try:
-            return [permission() for permission in self.permission_classes_by_method[self.request.method]]
-        except KeyError:
-            return [permission() for permission in self.permission_classes]
 
 class GuideDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes=(IsAuthenticated,)

@@ -9,3 +9,14 @@ class Guide(models.Model):
       get_user_model(),
       on_delete=models.CASCADE
   )
+
+  def __str__(self):
+    # This must return a string
+    return self.title
+
+    def as_dict(self):
+      return {
+        'id': self.id,
+        'title': self.title,
+        'text': self.text
+  }
